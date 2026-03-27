@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Milk Dairy Application</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-box" id="loginBox">
+  <h2>Milk Dairy Login</h2>
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+  <p id="loginMsg"></p>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <h2>Welcome, <span id="userName"></span></h2>
+
+  <!-- PROFILE -->
+  <h3>Profile Information</h3>
+  <p>Name: Mohan</p>
+  <p>Location: Chennai</p>
+  <p>Milk Type: Cow Milk</p>
+
+  <!-- MONTH -->
+  <h3>Milk Entry</h3>
+  <label>Month:</label>
+  <select id="month" onchange="generateDays()">
+    <option value="">Select Month</option>
+    <option value="31">January</option>
+    <option value="28">February</option>
+    <option value="31">March</option>
+    <option value="30">April</option>
+    <option value="31">May</option>
+    <option value="30">June</option>
+    <option value="31">July</option>
+    <option value="31">August</option>
+    <option value="30">September</option>
+    <option value="31">October</option>
+    <option value="30">November</option>
+    <option value="31">December</option>
+  </select>
+
+  <label>Cost per liter (₹):</label>
+  <input type="number" id="costPerLiter" value="40">
+
+  <div id="days"></div>
+
+  <button onclick="calculate()">Calculate</button>
+
+  <h3>Summary</h3>
+  <p>Total Liters: <span id="totalLiters">0</span></p>
+  <p>Total Cost: ₹<span id="totalCost">0</span></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+
+body {
+  font-family: Arial;
+  background: #f0f8ff;
+  padding: 20px;
+}
+
+.login-box, .dashboard {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  margin: auto;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+}
+
+button {
+  background: #007acc;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.dashboard {
+  display: none;
+}
+
+.day-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+// LOGIN FUNCTION
+function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  if (username === "admin" && password === "1234") {
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("userName").innerText = username;
+  } else {
+    document.getElementById("loginMsg").innerText = "Invalid Credentials";
+  }
+}
+
+// GENERATE DAYS
+function generateDays() {
+  const daysCount = document.getElementById("month").value;
+  const daysDiv = document.getElementById("days");
+  daysDiv.innerHTML = "";
+
+  for (let i = 1; i <= daysCount; i++) {
+    daysDiv.innerHTML += `
+      <div class="day-row">
+        Day ${i}
+        <input type="number" class="liter" placeholder="Liters">
+      </div>
+    `;
+  }
+}
+
+// CALCULATE TOTAL
+function calculate() {
+  const literInputs = document.getElementsByClassName("liter");
+  const costPerLiter = document.getElementById("costPerLiter").value;
+  let totalLiters = 0;
+
+  for (let input of literInputs) {
+    totalLiters += Number(input.value);
+  }
+
+  const totalCost = totalLiters * costPerLiter;
+
+  document.getElementById("totalLiters").innerText = totalLiters;
+  document.getElementById("totalCost").innerText = totalCost;
+}
