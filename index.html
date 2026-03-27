@@ -1,144 +1,1487 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Milk Dairy Application</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DairyTrack – Milk Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap%22 rel="stylesheet">
+<style>
+
+  :root {
+
+    --cream: #FFF8F0;
+
+    --milk: #FFFDF9;
+
+    --brown: #4A2C0A;
+
+    --caramel: #C17E3A;
+
+    --gold: #E8A84C;
+
+    --soft: #F5E6D0;
+
+    --muted: #9A7B5A;
+
+    --white: #FFFFFF;
+
+    --danger: #C0392B;
+
+    --success: #2E7D32;
+
+    --shadow: 0 8px 32px rgba(74,44,10,0.10);
+
+    --radius: 18px;
+
+  }
+ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+
+    font-family: 'DM Sans', sans-serif;
+
+    background: var(--cream);
+
+    min-height: 100vh;
+
+    color: var(--brown);
+
+  }
+ 
+  /* ===== AUTH SCREEN ===== */
+
+  #auth-screen {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 50%, #FFF8F0 100%);
+
+    position: relative;
+
+    overflow: hidden;
+
+  }
+ 
+  #auth-screen::before {
+
+    content: '';
+
+    position: absolute;
+
+    width: 600px; height: 600px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(circle, rgba(232,168,76,0.18) 0%, transparent 70%);
+
+    top: -150px; right: -150px;
+
+  }
+
+  #auth-screen::after {
+
+    content: '';
+
+    position: absolute;
+
+    width: 400px; height: 400px;
+
+    border-radius: 50%;
+
+    background: radial-gradient(circle, rgba(193,126,58,0.12) 0%, transparent 70%);
+
+    bottom: -100px; left: -100px;
+
+  }
+ 
+  .auth-card {
+
+    background: var(--white);
+
+    border-radius: 28px;
+
+    padding: 52px 48px;
+
+    width: 420px;
+
+    box-shadow: 0 24px 64px rgba(74,44,10,0.15);
+
+    position: relative;
+
+    z-index: 1;
+
+    animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+
+  }
+ 
+  @keyframes slideUp {
+
+    from { opacity: 0; transform: translateY(30px); }
+
+    to   { opacity: 1; transform: translateY(0); }
+
+  }
+ 
+  .auth-logo {
+
+    text-align: center;
+
+    margin-bottom: 32px;
+
+  }
+
+  .auth-logo .icon { font-size: 52px; }
+
+  .auth-logo h1 {
+
+    font-family: 'Playfair Display', serif;
+
+    font-size: 2rem;
+
+    color: var(--brown);
+
+    line-height: 1;
+
+    margin-top: 8px;
+
+  }
+
+  .auth-logo p { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+ 
+  .form-group { margin-bottom: 20px; }
+
+  .form-group label {
+
+    display: block;
+
+    font-size: 0.8rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+
+    text-transform: uppercase;
+
+    color: var(--muted);
+
+    margin-bottom: 8px;
+
+  }
+
+  .form-group input {
+
+    width: 100%;
+
+    padding: 14px 18px;
+
+    border: 2px solid var(--soft);
+
+    border-radius: 12px;
+
+    font-family: 'DM Sans', sans-serif;
+
+    font-size: 1rem;
+
+    color: var(--brown);
+
+    background: var(--milk);
+
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    outline: none;
+
+  }
+
+  .form-group input:focus {
+
+    border-color: var(--caramel);
+
+    box-shadow: 0 0 0 4px rgba(193,126,58,0.12);
+
+  }
+ 
+  .btn-primary {
+
+    width: 100%;
+
+    padding: 15px;
+
+    background: linear-gradient(135deg, var(--caramel), var(--gold));
+
+    color: white;
+
+    border: none;
+
+    border-radius: 12px;
+
+    font-family: 'DM Sans', sans-serif;
+
+    font-size: 1rem;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: transform 0.15s, box-shadow 0.15s;
+
+    margin-top: 8px;
+
+  }
+
+  .btn-primary:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 24px rgba(193,126,58,0.35);
+
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+ 
+  .auth-error {
+
+    background: #FFEBEE;
+
+    color: var(--danger);
+
+    border-radius: 10px;
+
+    padding: 10px 14px;
+
+    font-size: 0.88rem;
+
+    margin-top: 14px;
+
+    text-align: center;
+
+    display: none;
+
+  }
+ 
+  /* ===== MAIN APP ===== */
+
+  #app-screen { display: none; min-height: 100vh; }
+ 
+  .topbar {
+
+    background: var(--brown);
+
+    color: white;
+
+    padding: 0 32px;
+
+    height: 64px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 100;
+
+    box-shadow: 0 4px 20px rgba(74,44,10,0.25);
+
+  }
+
+  .topbar-brand {
+
+    font-family: 'Playfair Display', serif;
+
+    font-size: 1.4rem;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+
+  .topbar-user { font-size: 0.88rem; color: rgba(255,255,255,0.75); }
+
+  .btn-logout {
+
+    background: rgba(255,255,255,0.12);
+
+    border: 1px solid rgba(255,255,255,0.2);
+
+    color: white;
+
+    padding: 7px 16px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 0.85rem;
+
+    font-family: 'DM Sans', sans-serif;
+
+    transition: background 0.2s;
+
+  }
+
+  .btn-logout:hover { background: rgba(255,255,255,0.22); }
+ 
+  .main-layout {
+
+    display: grid;
+
+    grid-template-columns: 280px 1fr;
+
+    min-height: calc(100vh - 64px);
+
+  }
+ 
+  /* SIDEBAR */
+
+  .sidebar {
+
+    background: var(--white);
+
+    border-right: 1px solid var(--soft);
+
+    padding: 28px 0;
+
+  }
+
+  .nav-section-title {
+
+    font-size: 0.7rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+
+    text-transform: uppercase;
+
+    color: var(--muted);
+
+    padding: 0 24px;
+
+    margin-bottom: 8px;
+
+    margin-top: 20px;
+
+  }
+
+  .nav-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 12px 24px;
+
+    cursor: pointer;
+
+    font-weight: 500;
+
+    color: var(--muted);
+
+    transition: all 0.15s;
+
+    border-left: 3px solid transparent;
+
+  }
+
+  .nav-item:hover { background: var(--cream); color: var(--brown); }
+
+  .nav-item.active {
+
+    background: var(--soft);
+
+    color: var(--brown);
+
+    border-left-color: var(--caramel);
+
+    font-weight: 600;
+
+  }
+
+  .nav-item .nav-icon { font-size: 1.1rem; }
+ 
+  /* CONTENT */
+
+  .content { padding: 36px; background: var(--cream); }
+ 
+  .page { display: none; animation: fadeIn 0.35s ease; }
+
+  .page.active { display: block; }
+ 
+  @keyframes fadeIn {
+
+    from { opacity: 0; transform: translateY(8px); }
+
+    to   { opacity: 1; transform: translateY(0); }
+
+  }
+ 
+  .page-header { margin-bottom: 28px; }
+
+  .page-header h2 {
+
+    font-family: 'Playfair Display', serif;
+
+    font-size: 1.9rem;
+
+    color: var(--brown);
+
+  }
+
+  .page-header p { color: var(--muted); margin-top: 4px; font-size: 0.9rem; }
+ 
+  /* CARDS */
+
+  .card {
+
+    background: var(--white);
+
+    border-radius: var(--radius);
+
+    padding: 28px;
+
+    box-shadow: var(--shadow);
+
+    margin-bottom: 24px;
+
+  }
+
+  .card-title {
+
+    font-family: 'Playfair Display', serif;
+
+    font-size: 1.1rem;
+
+    color: var(--brown);
+
+    margin-bottom: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+  }
+ 
+  /* STAT CARDS */
+
+  .stat-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 20px;
+
+    margin-bottom: 28px;
+
+  }
+
+  .stat-card {
+
+    background: var(--white);
+
+    border-radius: var(--radius);
+
+    padding: 24px;
+
+    box-shadow: var(--shadow);
+
+    position: relative;
+
+    overflow: hidden;
+
+  }
+
+  .stat-card::after {
+
+    content: attr(data-icon);
+
+    position: absolute;
+
+    font-size: 4rem;
+
+    right: -8px; top: -8px;
+
+    opacity: 0.08;
+
+  }
+
+  .stat-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--brown); margin-top: 6px; }
+
+  .stat-sub { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+ 
+  /* PROFILE */
+
+  .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+  .profile-field label {
+
+    display: block;
+
+    font-size: 0.78rem;
+
+    font-weight: 600;
+
+    letter-spacing: 0.06em;
+
+    text-transform: uppercase;
+
+    color: var(--muted);
+
+    margin-bottom: 6px;
+
+  }
+
+  .profile-field input, .profile-field select {
+
+    width: 100%;
+
+    padding: 12px 16px;
+
+    border: 2px solid var(--soft);
+
+    border-radius: 10px;
+
+    font-family: 'DM Sans', sans-serif;
+
+    font-size: 0.95rem;
+
+    color: var(--brown);
+
+    background: var(--milk);
+
+    outline: none;
+
+    transition: border-color 0.2s;
+
+  }
+
+  .profile-field input:focus, .profile-field select:focus { border-color: var(--caramel); }
+
+  .profile-field.full { grid-column: 1 / -1; }
+ 
+  .btn-save {
+
+    background: linear-gradient(135deg, var(--caramel), var(--gold));
+
+    color: white;
+
+    border: none;
+
+    padding: 12px 28px;
+
+    border-radius: 10px;
+
+    font-family: 'DM Sans', sans-serif;
+
+    font-weight: 600;
+
+    font-size: 0.95rem;
+
+    cursor: pointer;
+
+    transition: transform 0.15s, box-shadow 0.15s;
+
+    margin-top: 8px;
+
+  }
+
+  .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(193,126,58,0.3); }
+ 
+  /* MONTH SELECTOR */
+
+  .month-nav {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 24px;
+
+  }
+
+  .month-nav select {
+
+    padding: 10px 16px;
+
+    border: 2px solid var(--soft);
+
+    border-radius: 10px;
+
+    font-family: 'DM Sans', sans-serif;
+
+    font-size: 0.95rem;
+
+    color: var(--brown);
+
+    background: var(--white);
+
+    outline: none;
+
+    cursor: pointer;
+
+  }
+
+  .month-nav select:focus { border-color: var(--caramel); }
+ 
+  /* TABLE */
+
+  .table-wrap { overflow-x: auto; border-radius: 14px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+
+  thead tr { background: var(--soft); }
+
+  thead th {
+
+    padding: 12px 16px;
+
+    text-align: left;
+
+    font-weight: 600;
+
+    color: var(--brown);
+
+    font-size: 0.78rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.07em;
+
+  }
+
+  tbody tr { border-bottom: 1px solid var(--soft); transition: background 0.1s; }
+
+  tbody tr:hover { background: var(--cream); }
+
+  tbody td { padding: 12px 16px; color: var(--brown); }
+
+  tbody td input[type="number"] {
+
+    width: 90px;
+
+    padding: 7px 10px;
+
+    border: 2px solid var(--soft);
+
+    border-radius: 8px;
+
+    font-family: 'DM Sans', sans-serif;
+
+    font-size: 0.9rem;
+
+    color: var(--brown);
+
+    background: var(--milk);
+
+    outline: none;
+
+    transition: border-color 0.2s;
+
+  }
+
+  tbody td input[type="number"]:focus { border-color: var(--caramel); }
+
+  .badge {
+
+    display: inline-block;
+
+    padding: 3px 10px;
+
+    border-radius: 20px;
+
+    font-size: 0.78rem;
+
+    font-weight: 600;
+
+  }
+
+  .badge-yes { background: #E8F5E9; color: var(--success); }
+
+  .badge-no  { background: #FFEBEE; color: var(--danger); }
+ 
+  /* SUMMARY ROW */
+
+  .summary-bar {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 16px;
+
+    margin-top: 20px;
+
+  }
+
+  .summary-item {
+
+    background: var(--soft);
+
+    border-radius: 12px;
+
+    padding: 16px 20px;
+
+    text-align: center;
+
+  }
+
+  .summary-item .s-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 600; }
+
+  .summary-item .s-val { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--brown); margin-top: 4px; }
+ 
+  /* PROFILE AVATAR */
+
+  .profile-avatar {
+
+    width: 90px; height: 90px;
+
+    border-radius: 50%;
+
+    background: linear-gradient(135deg, var(--caramel), var(--gold));
+
+    display: flex; align-items: center; justify-content: center;
+
+    font-size: 2.5rem;
+
+    color: white;
+
+    margin-bottom: 16px;
+
+    box-shadow: 0 8px 24px rgba(193,126,58,0.3);
+
+  }
+ 
+  .toast {
+
+    position: fixed;
+
+    bottom: 28px; right: 28px;
+
+    background: var(--brown);
+
+    color: white;
+
+    padding: 14px 22px;
+
+    border-radius: 12px;
+
+    font-size: 0.9rem;
+
+    font-weight: 500;
+
+    box-shadow: 0 8px 28px rgba(74,44,10,0.3);
+
+    z-index: 999;
+
+    transform: translateY(80px);
+
+    opacity: 0;
+
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+ 
+  @media (max-width: 900px) {
+
+    .main-layout { grid-template-columns: 1fr; }
+
+    .sidebar { display: none; }
+
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+
+  }
+</style>
 </head>
 <body>
-
-<!-- LOGIN -->
-<div class="login-box" id="loginBox">
-  <h2>Milk Dairy Login</h2>
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-  <p id="loginMsg"></p>
+ 
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+<div class="auth-card">
+<div class="auth-logo">
+<div class="icon">🥛</div>
+<h1>DairyTrack</h1>
+<p>Milk Delivery Management System</p>
 </div>
-
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboard">
-  <h2>Welcome, <span id="userName"></span></h2>
-
-  <!-- PROFILE -->
-  <h3>Profile Information</h3>
-  <p>Name: Mohan</p>
-  <p>Location: Chennai</p>
-  <p>Milk Type: Cow Milk</p>
-
-  <!-- MONTH -->
-  <h3>Milk Entry</h3>
-  <label>Month:</label>
-  <select id="month" onchange="generateDays()">
-    <option value="">Select Month</option>
-    <option value="31">January</option>
-    <option value="28">February</option>
-    <option value="31">March</option>
-    <option value="30">April</option>
-    <option value="31">May</option>
-    <option value="30">June</option>
-    <option value="31">July</option>
-    <option value="31">August</option>
-    <option value="30">September</option>
-    <option value="31">October</option>
-    <option value="30">November</option>
-    <option value="31">December</option>
-  </select>
-
-  <label>Cost per liter (₹):</label>
-  <input type="number" id="costPerLiter" value="40">
-
-  <div id="days"></div>
-
-  <button onclick="calculate()">Calculate</button>
-
-  <h3>Summary</h3>
-  <p>Total Liters: <span id="totalLiters">0</span></p>
-  <p>Total Cost: ₹<span id="totalCost">0</span></p>
+<div class="form-group">
+<label>Username</label>
+<input type="text" id="inp-user" placeholder="Enter your username" />
 </div>
+<div class="form-group">
+<label>Password</label>
+<input type="password" id="inp-pass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()" />
+</div>
+<button class="btn-primary" onclick="doLogin()">Sign In</button>
+<div class="auth-error" id="auth-err">❌ Invalid username or password.</div>
+<p style="text-align:center;margin-top:18px;font-size:0.8rem;color:var(--muted);">Demo: <strong>admin</strong> / <strong>dairy123</strong></p>
+</div>
+</div>
+ 
+<!-- APP SCREEN -->
+<div id="app-screen">
+<div class="topbar">
+<div class="topbar-brand">🥛 DairyTrack</div>
+<div class="topbar-right">
+<span class="topbar-user" id="topbar-user"></span>
+<button class="btn-logout" onclick="doLogout()">Logout</button>
+</div>
+</div>
+ 
+  <div class="main-layout">
+<!-- SIDEBAR -->
+<div class="sidebar">
+<div class="nav-section-title">Menu</div>
+<div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+<span class="nav-icon">📊</span> Dashboard
+</div>
+<div class="nav-item" onclick="showPage('profile')" id="nav-profile">
+<span class="nav-icon">👤</span> My Profile
+</div>
+<div class="nav-item" onclick="showPage('delivery')" id="nav-delivery">
+<span class="nav-icon">🗓️</span> Monthly Delivery
+</div>
+<div class="nav-item" onclick="showPage('billing')" id="nav-billing">
+<span class="nav-icon">💰</span> Billing Summary
+</div>
+</div>
+ 
+    <!-- CONTENT -->
+<div class="content">
+ 
+      <!-- DASHBOARD -->
+<div class="page active" id="page-dashboard">
+<div class="page-header">
+<h2>Dashboard</h2>
+<p>Overview of your milk delivery account</p>
+</div>
+<div class="stat-grid">
+<div class="stat-card" data-icon="📅">
+<div class="stat-label">Days Delivered</div>
+<div class="stat-value" id="stat-days">—</div>
+<div class="stat-sub" id="stat-month-label">This month</div>
+</div>
+<div class="stat-card" data-icon="🥛">
+<div class="stat-label">Total Litres</div>
+<div class="stat-value" id="stat-litres">—</div>
+<div class="stat-sub">This month</div>
+</div>
+<div class="stat-card" data-icon="💰">
+<div class="stat-label">Total Cost</div>
+<div class="stat-value" id="stat-cost">—</div>
+<div class="stat-sub">This month</div>
+</div>
+<div class="stat-card" data-icon="📦">
+<div class="stat-label">Rate / Litre</div>
+<div class="stat-value" id="stat-rate">—</div>
+<div class="stat-sub">Current rate</div>
+</div>
+</div>
+<div class="card">
+<div class="card-title">📅 Recent Deliveries (Last 7 entries)</div>
+<div class="table-wrap">
+<table id="recent-table">
+<thead><tr><th>Date</th><th>Litres</th><th>Cost (₹)</th><th>Status</th></tr></thead>
+<tbody id="recent-tbody"></tbody>
+</table>
+</div>
+</div>
+</div>
+ 
+      <!-- PROFILE -->
+<div class="page" id="page-profile">
+<div class="page-header">
+<h2>My Profile</h2>
+<p>Manage your personal information</p>
+</div>
+<div class="card">
+<div style="display:flex;align-items:center;gap:20px;margin-bottom:28px;">
+<div class="profile-avatar" id="profile-avatar">👤</div>
+<div>
+<div style="font-family:'Playfair Display',serif;font-size:1.4rem" id="profile-display-name">—</div>
+<div style="color:var(--muted);font-size:0.88rem;margin-top:4px" id="profile-display-id">Customer ID: —</div>
+</div>
+</div>
+<div class="profile-grid">
+<div class="profile-field">
+<label>Full Name</label>
+<input type="text" id="p-name" placeholder="Your full name" />
+</div>
+<div class="profile-field">
+<label>Customer ID</label>
+<input type="text" id="p-id" placeholder="e.g. CUS-001" />
+</div>
+<div class="profile-field">
+<label>Phone Number</label>
+<input type="text" id="p-phone" placeholder="+91 XXXXX XXXXX" />
+</div>
+<div class="profile-field">
+<label>Email Address</label>
+<input type="email" id="p-email" placeholder="email@example.com" />
+</div>
+<div class="profile-field full">
+<label>Address</label>
+<input type="text" id="p-address" placeholder="House no., Street, Area..." />
+</div>
+<div class="profile-field">
+<label>Milk Type</label>
+<select id="p-milktype">
+<option>Full Cream</option>
+<option>Toned Milk</option>
+<option>Double Toned</option>
+<option>Skimmed Milk</option>
+<option>Buffalo Milk</option>
+</select>
+</div>
+<div class="profile-field">
+<label>Rate per Litre (₹)</label>
+<input type="number" id="p-rate" placeholder="e.g. 60" min="0" />
+</div>
+</div>
+<br>
+<button class="btn-save" onclick="saveProfile()">💾 Save Profile</button>
+</div>
+</div>
+ 
+      <!-- DELIVERY -->
+<div class="page" id="page-delivery">
+<div class="page-header">
+<h2>Monthly Delivery Log</h2>
+<p>Track daily milk delivery for each day of the month</p>
+</div>
+<div class="card">
+<div class="month-nav">
+<label style="font-weight:600;color:var(--muted);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.07em;">Select Month:</label>
+<select id="sel-month" onchange="renderDeliveryTable()"></select>
+<select id="sel-year" onchange="renderDeliveryTable()"></select>
+</div>
+<div class="table-wrap">
+<table id="delivery-table">
+<thead>
+<tr>
+<th>Day</th>
+<th>Date</th>
+<th>Litres Taken</th>
+<th>Rate (₹/L)</th>
+<th>Daily Cost (₹)</th>
+<th>Delivered?</th>
+</tr>
+</thead>
+<tbody id="delivery-tbody"></tbody>
+</table>
+</div>
+<div class="summary-bar">
+<div class="summary-item">
+<div class="s-label">Days Delivered</div>
+<div class="s-val" id="sum-days">0</div>
+</div>
+<div class="summary-item">
+<div class="s-label">Total Litres</div>
+<div class="s-val" id="sum-litres">0.0 L</div>
+</div>
+<div class="summary-item">
+<div class="s-label">Total Cost</div>
+<div class="s-val" id="sum-cost">₹0.00</div>
+</div>
+</div>
+<br>
+<button class="btn-save" onclick="saveDelivery()">💾 Save Delivery Log</button>
+</div>
+</div>
+ 
+      <!-- BILLING -->
+<div class="page" id="page-billing">
+<div class="page-header">
+<h2>Billing Summary</h2>
+<p>Monthly cost breakdown</p>
+</div>
+<div id="billing-content"></div>
+</div>
+ 
+    </div><!-- /content -->
+</div><!-- /main-layout -->
+</div><!-- /app-screen -->
+ 
+<div class="toast" id="toast"></div>
+ 
+<script>
 
-<script src="script.js"></script>
+// ========== DATA STORE ==========
+
+const USERS = {
+
+  'admin': 'dairy123',
+
+  'customer1': 'milk@123',
+
+};
+ 
+let state = {
+
+  loggedIn: false,
+
+  username: '',
+
+  profile: {
+
+    name: 'Admin User', id: 'CUS-001', phone: '', email: '', address: '',
+
+    milkType: 'Full Cream', rate: 60
+
+  },
+
+  deliveries: {}
+
+};
+ 
+const MONTHS = ['January','February','March','April','May','June',
+
+                 'July','August','September','October','November','December'];
+
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+ 
+// ========== AUTH ==========
+
+function doLogin() {
+
+  const u = document.getElementById('inp-user').value.trim();
+
+  const p = document.getElementById('inp-pass').value.trim();
+
+  if (USERS[u] && USERS[u] === p) {
+
+    state.loggedIn = true;
+
+    state.username = u;
+
+    document.getElementById('auth-screen').style.display = 'none';
+
+    document.getElementById('app-screen').style.display = 'block';
+
+    document.getElementById('topbar-user').textContent = '👤 ' + u;
+
+    initApp();
+
+  } else {
+
+    document.getElementById('auth-err').style.display = 'block';
+
+  }
+
+}
+ 
+function doLogout() {
+
+  state.loggedIn = false;
+
+  document.getElementById('app-screen').style.display = 'none';
+
+  document.getElementById('auth-screen').style.display = 'flex';
+
+  document.getElementById('inp-user').value = '';
+
+  document.getElementById('inp-pass').value = '';
+
+  document.getElementById('auth-err').style.display = 'none';
+
+}
+ 
+// ========== INIT ==========
+
+function initApp() {
+
+  populateMonthYear();
+
+  loadProfile();
+
+  renderDeliveryTable();
+
+  renderDashboard();
+
+  renderBilling();
+
+  showPage('dashboard');
+
+}
+ 
+function populateMonthYear() {
+
+  const ms = document.getElementById('sel-month');
+
+  const ys = document.getElementById('sel-year');
+
+  ms.innerHTML = MONTHS.map((m,i) => `<option value="${i}">${m}</option>`).join('');
+
+  const now = new Date();
+
+  for (let y = now.getFullYear()-1; y <= now.getFullYear()+1; y++) {
+
+    ys.innerHTML += `<option value="${y}" ${y===now.getFullYear()?'selected':''}>${y}</option>`;
+
+  }
+
+  ms.value = now.getMonth();
+
+}
+ 
+// ========== PAGES ==========
+
+function showPage(pg) {
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  document.getElementById('page-'+pg).classList.add('active');
+
+  document.getElementById('nav-'+pg).classList.add('active');
+
+  if (pg === 'delivery') renderDeliveryTable();
+
+  if (pg === 'billing') renderBilling();
+
+  if (pg === 'dashboard') renderDashboard();
+
+}
+ 
+// ========== PROFILE ==========
+
+function loadProfile() {
+
+  const pr = state.profile;
+
+  document.getElementById('p-name').value = pr.name;
+
+  document.getElementById('p-id').value = pr.id;
+
+  document.getElementById('p-phone').value = pr.phone;
+
+  document.getElementById('p-email').value = pr.email;
+
+  document.getElementById('p-address').value = pr.address;
+
+  document.getElementById('p-milktype').value = pr.milkType;
+
+  document.getElementById('p-rate').value = pr.rate;
+
+  document.getElementById('profile-display-name').textContent = pr.name || '—';
+
+  document.getElementById('profile-display-id').textContent = 'Customer ID: ' + (pr.id || '—');
+
+  document.getElementById('profile-avatar').textContent = pr.name ? pr.name[0].toUpperCase() : '👤';
+
+}
+ 
+function saveProfile() {
+
+  state.profile = {
+
+    name: document.getElementById('p-name').value,
+
+    id: document.getElementById('p-id').value,
+
+    phone: document.getElementById('p-phone').value,
+
+    email: document.getElementById('p-email').value,
+
+    address: document.getElementById('p-address').value,
+
+    milkType: document.getElementById('p-milktype').value,
+
+    rate: parseFloat(document.getElementById('p-rate').value) || 60
+
+  };
+
+  loadProfile();
+
+  renderDashboard();
+
+  renderDeliveryTable();
+
+  renderBilling();
+
+  showToast('✅ Profile saved successfully!');
+
+}
+ 
+// ========== DELIVERY TABLE ==========
+
+function getKey(month, year) { return `${year}-${month}`; }
+ 
+function getDaysInMonth(month, year) {
+
+  return new Date(year, parseInt(month)+1, 0).getDate();
+
+}
+ 
+function renderDeliveryTable() {
+
+  const month = document.getElementById('sel-month').value;
+
+  const year = document.getElementById('sel-year').value;
+
+  const key = getKey(month, year);
+
+  const days = getDaysInMonth(month, year);
+
+  const rate = state.profile.rate || 60;
+
+  const saved = state.deliveries[key] || {};
+ 
+  let tbody = '';
+
+  for (let d = 1; d <= days; d++) {
+
+    const dateObj = new Date(year, month, d);
+
+    const dayName = DAYS[dateObj.getDay()];
+
+    const dateStr = `${d} ${MONTHS[month].substring(0,3)} ${year}`;
+
+    const litres = saved[d] !== undefined ? saved[d] : 0;
+
+    const cost = (litres * rate).toFixed(2);
+
+    const delivered = litres > 0;
+
+    tbody += `<tr>
+<td>${dayName}</td>
+<td>${dateStr}</td>
+<td><input type="number" min="0" step="0.5" value="${litres}" id="d-${d}" oninput="updateSummary()" placeholder="0" /></td>
+<td>₹${rate}</td>
+<td id="dc-${d}">₹${cost}</td>
+<td><span class="badge ${delivered?'badge-yes':'badge-no'}" id="db-${d}">${delivered?'✔ Yes':'✘ No'}</span></td>
+</tr>`;
+
+  }
+
+  document.getElementById('delivery-tbody').innerHTML = tbody;
+
+  updateSummary();
+
+}
+ 
+function updateSummary() {
+
+  const month = document.getElementById('sel-month').value;
+
+  const rate = state.profile.rate || 60;
+
+  const days = getDaysInMonth(month, document.getElementById('sel-year').value);
+
+  let totalL = 0, totalDays = 0;
+
+  for (let d = 1; d <= days; d++) {
+
+    const inp = document.getElementById('d-'+d);
+
+    if (!inp) continue;
+
+    const v = parseFloat(inp.value) || 0;
+
+    totalL += v;
+
+    if (v > 0) totalDays++;
+
+    document.getElementById('dc-'+d).textContent = '₹' + (v * rate).toFixed(2);
+
+    document.getElementById('db-'+d).className = 'badge ' + (v > 0 ? 'badge-yes' : 'badge-no');
+
+    document.getElementById('db-'+d).textContent = v > 0 ? '✔ Yes' : '✘ No';
+
+  }
+
+  document.getElementById('sum-days').textContent = totalDays;
+
+  document.getElementById('sum-litres').textContent = totalL.toFixed(1) + ' L';
+
+  document.getElementById('sum-cost').textContent = '₹' + (totalL * rate).toFixed(2);
+
+}
+ 
+function saveDelivery() {
+
+  const month = document.getElementById('sel-month').value;
+
+  const year = document.getElementById('sel-year').value;
+
+  const key = getKey(month, year);
+
+  const days = getDaysInMonth(month, year);
+
+  const data = {};
+
+  for (let d = 1; d <= days; d++) {
+
+    const inp = document.getElementById('d-'+d);
+
+    if (inp) data[d] = parseFloat(inp.value) || 0;
+
+  }
+
+  state.deliveries[key] = data;
+
+  renderDashboard();
+
+  renderBilling();
+
+  showToast('✅ Delivery log saved!');
+
+}
+ 
+// ========== DASHBOARD ==========
+
+function renderDashboard() {
+
+  const now = new Date();
+
+  const month = now.getMonth();
+
+  const year = now.getFullYear();
+
+  const key = getKey(month, year);
+
+  const saved = state.deliveries[key] || {};
+
+  const rate = state.profile.rate || 60;
+ 
+  let totalL = 0, totalDays = 0;
+
+  Object.values(saved).forEach(v => { totalL += v; if (v > 0) totalDays++; });
+ 
+  document.getElementById('stat-days').textContent = totalDays;
+
+  document.getElementById('stat-litres').textContent = totalL.toFixed(1) + ' L';
+
+  document.getElementById('stat-cost').textContent = '₹' + (totalL * rate).toFixed(0);
+
+  document.getElementById('stat-rate').textContent = '₹' + rate;
+
+  document.getElementById('stat-month-label').textContent = MONTHS[month] + ' ' + year;
+ 
+  // Recent entries
+
+  const entries = Object.entries(saved)
+
+    .filter(([,v]) => v > 0)
+
+    .sort((a,b) => parseInt(b[0])-parseInt(a[0]))
+
+    .slice(0, 7);
+ 
+  const tbody = document.getElementById('recent-tbody');
+
+  if (entries.length === 0) {
+
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">No deliveries recorded this month.</td></tr>';
+
+    return;
+
+  }
+
+  tbody.innerHTML = entries.map(([d, v]) => {
+
+    const cost = (v * rate).toFixed(2);
+
+    return `<tr>
+<td>${d} ${MONTHS[month].substring(0,3)} ${year}</td>
+<td>${v} L</td>
+<td>₹${cost}</td>
+<td><span class="badge badge-yes">✔ Delivered</span></td>
+</tr>`;
+
+  }).join('');
+
+}
+ 
+// ========== BILLING ==========
+
+function renderBilling() {
+
+  const rate = state.profile.rate || 60;
+
+  let html = '';
+
+  const keys = Object.keys(state.deliveries).sort().reverse();
+
+  if (keys.length === 0) {
+
+    html = '<div class="card" style="text-align:center;color:var(--muted);padding:40px;">No billing data yet. Add delivery records first.</div>';
+
+  } else {
+
+    keys.forEach(key => {
+
+      const [year, month] = key.split('-');
+
+      const saved = state.deliveries[key];
+
+      let totalL = 0, totalDays = 0;
+
+      Object.values(saved).forEach(v => { totalL += v; if (v > 0) totalDays++; });
+
+      const totalCost = (totalL * rate).toFixed(2);
+
+      html += `<div class="card">
+<div class="card-title">📅 ${MONTHS[parseInt(month)]} ${year}</div>
+<div class="summary-bar">
+<div class="summary-item"><div class="s-label">Days Delivered</div><div class="s-val">${totalDays}</div></div>
+<div class="summary-item"><div class="s-label">Total Litres</div><div class="s-val">${totalL.toFixed(1)} L</div></div>
+<div class="summary-item"><div class="s-label">Total Cost</div><div class="s-val">₹${totalCost}</div></div>
+</div>
+<div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--soft);display:flex;justify-content:space-between;font-size:0.85rem;color:var(--muted);">
+<span>Rate: ₹${rate}/L</span>
+<span>Milk Type: ${state.profile.milkType}</span>
+<span>Customer: ${state.profile.name}</span>
+</div>
+</div>`;
+
+    });
+
+  }
+
+  document.getElementById('billing-content').innerHTML = html;
+
+}
+ 
+// ========== TOAST ==========
+
+function showToast(msg) {
+
+  const t = document.getElementById('toast');
+
+  t.textContent = msg;
+
+  t.classList.add('show');
+
+  setTimeout(() => t.classList.remove('show'), 2800);
+
+}
+</script>
 </body>
 </html>
-
-body {
-  font-family: Arial;
-  background: #f0f8ff;
-  padding: 20px;
-}
-
-.login-box, .dashboard {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 500px;
-  margin: auto;
-}
-
-input, select, button {
-  width: 100%;
-  padding: 8px;
-  margin: 5px 0;
-}
-
-button {
-  background: #007acc;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.dashboard {
-  display: none;
-}
-
-.day-row {
-  display: flex;
-  justify-content: space-between;
-  margin: 5px 0;
-}
-
-// LOGIN FUNCTION
-function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-
-  if (username === "admin" && password === "1234") {
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("dashboard").style.display = "block";
-    document.getElementById("userName").innerText = username;
-  } else {
-    document.getElementById("loginMsg").innerText = "Invalid Credentials";
-  }
-}
-
-// GENERATE DAYS
-function generateDays() {
-  const daysCount = document.getElementById("month").value;
-  const daysDiv = document.getElementById("days");
-  daysDiv.innerHTML = "";
-
-  for (let i = 1; i <= daysCount; i++) {
-    daysDiv.innerHTML += `
-      <div class="day-row">
-        Day ${i}
-        <input type="number" class="liter" placeholder="Liters">
-      </div>
-    `;
-  }
-}
-
-// CALCULATE TOTAL
-function calculate() {
-  const literInputs = document.getElementsByClassName("liter");
-  const costPerLiter = document.getElementById("costPerLiter").value;
-  let totalLiters = 0;
-
-  for (let input of literInputs) {
-    totalLiters += Number(input.value);
-  }
-
-  const totalCost = totalLiters * costPerLiter;
-
-  document.getElementById("totalLiters").innerText = totalLiters;
-  document.getElementById("totalCost").innerText = totalCost;
-}
+ 
